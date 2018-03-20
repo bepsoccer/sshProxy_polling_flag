@@ -3,11 +3,11 @@
   "description": "polling ssh proxy",
   "memory": 128,
   "timeout": 5,
-  "environment": {},
   "profile": "default",
   "dependencies": {
     "ssh2": "latest",
     "ssh2-sftp-client": "latest",
-    "fs": "latest"
+    "fs": "latest",
+    "dotenv": "latest"
   }
 }
