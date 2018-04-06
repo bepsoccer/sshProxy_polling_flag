@@ -1,0 +1,8 @@
+{
+  "sshServers": [
+    "10.1.1.1"
+  ],
+  "UN": "user",
+  "PASS": "user",
+  "HASH": "abc123"
+}

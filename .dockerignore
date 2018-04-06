@@ -1,2 +1,5 @@
-node_modules
+src/node_modules
+src/node_modules/**/*
 npm-debug.log
+.gitignore
+settings-example.json
