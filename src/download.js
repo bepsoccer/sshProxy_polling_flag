@@ -30,6 +30,7 @@ sftp.connect({
   return sftp.get('results.xml');
 })
 .then((stream) => {
+  console.log("no proxy in place");
   sftp.end();
 })
 .catch((err) => {
