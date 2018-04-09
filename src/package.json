@@ -10,7 +10,6 @@
     "ssh2": "latest",
     "ssh2-sftp-client": "latest",
     "fs": "latest",
-    "dotenv": "latest",
     "sleep": "latest"
   }
 }
