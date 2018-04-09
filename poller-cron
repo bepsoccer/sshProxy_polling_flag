@@ -1,3 +1,0 @@
-#* * * * * root echo "Hello world" | tee -a /var/log/cron.log 2>&1
-* * * * * root node download.js >> /var/log/cron.log 2>&1
-# An empty line is required at the end of this file for a valid cron file.

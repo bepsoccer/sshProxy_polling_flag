@@ -1,13 +1,16 @@
 {
   "name": "sshProxy",
   "description": "polling ssh proxy",
-  "memory": 128,
-  "timeout": 5,
-  "profile": "default",
+  "author": "Brad Parker",
+  "main": "download.js",
+  "scripts": {
+    "start": "node download.js"
+  },
   "dependencies": {
     "ssh2": "latest",
     "ssh2-sftp-client": "latest",
     "fs": "latest",
-    "dotenv": "latest"
+    "dotenv": "latest",
+    "sleep": "latest"
   }
 }
