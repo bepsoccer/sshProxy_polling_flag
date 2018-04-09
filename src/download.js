@@ -6,8 +6,10 @@ var sleep = require('sleep');
 
 function poller(target){
   sleep.sleep(10);
+  var fileName = makeid();
+  fileName = fileName + ".txt";
   sftp.connect({
-    host: target,
+    host: target.ip,
     hostHash: 'md5',
     hostVerifier: function(hashedKey) {
       if (settings.HASH === "") {
@@ -22,18 +24,23 @@ function poller(target){
       console.log("Hash values: Server = " + hashedKey + " <> Client = " + setting.HASH);
       return false;
     },
-    port: '22',
+    port: target.port,
     username: settings.UN,
     password: settings.PASS
   })
   .then(() => {
-    return sftp.put('results.xml', 'resultsUpload.xml');
+    return sftp.put(settings.uploadFileName, fileName);
   })
   .then(() => {
-    return sftp.get('results.xml');
+    return sftp.get(fileName);
   })
   .then((stream) => {
     console.log("no proxy in place");
+    //sftp.end();
+    //poller(target);
+  })
+  .then(() => {
+    sftp.delete(fileName);
     sftp.end();
     poller(target);
   })
@@ -42,6 +49,16 @@ function poller(target){
       sftp.end();
       poller(target);
   });
+}
+
+function makeid() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < 5; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
 }
 
 settings.sshServers.forEach(function(target) {
