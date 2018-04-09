@@ -1,8 +1,12 @@
 {
   "sshServers": [
-    "10.1.1.1"
+    {
+    	"ip": "10.1.1.1",
+    	"port": "22"
+    }
   ],
   "UN": "user",
   "PASS": "user",
-  "HASH": "abc123"
+  "HASH": "abc123",
+  "uploadFileName": "fileToUpload.txt"
 }
