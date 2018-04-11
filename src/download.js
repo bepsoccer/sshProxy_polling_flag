@@ -52,7 +52,7 @@ function poller(target){
           var q = 'flags';
          
            ch.assertQueue(q, {durable: true});
-           ch.sendToQueue(q, new Buffer.from('\{\'team\': ' + target.id + ', \'boxName\': \'BoxName\', \'flagName\': \'Gimme\', \'token\': \'FLAG=NoFlag\’\}'));
+           ch.sendToQueue(q, new Buffer.from('\{\"team\": ' + target.id + ', \"boxName\": \"BoxName\", \"flagName\": \"Gimme\", \"token\": \"FLAG=NoFlag\"\}'));
           });
         setTimeout(function() { conn.close(); process.exit(0) }, 500);
         });
