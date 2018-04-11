@@ -11,6 +11,6 @@
     "ssh2-sftp-client": "latest",
     "fs": "latest",
     "sleep": "latest",
-    "amqplib": "latest"
+    "node-rest-client": "latest"
   }
 }

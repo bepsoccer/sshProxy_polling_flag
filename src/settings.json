@@ -1,48 +1,54 @@
 {
   "sshServers": [
     {
-    	"id": "1",
+    	"id": 1,
       "ip": "10.1.1.105",
-    	"port": "2222"
+    	"port": 2222
     },
     {
-      "id": "2",
+      "id": 2,
       "ip": "10.2.1.105",
-      "port": "2222"
+      "port": 2222
     },
     {
-      "id": "3",
+      "id": 3,
       "ip": "10.3.1.105",
-      "port": "2222"
+      "port": 2222
     },
     {
-      "id": "4",
+      "id": 4,
       "ip": "10.4.1.105",
-      "port": "2222"
+      "port": 2222
     },
     {
-      "id": "5",
+      "id": 5,
       "ip": "10.5.1.105",
-      "port": "2222"
+      "port": 2222
     },
     {
-      "id": "6",
+      "id": 6,
       "ip": "10.6.1.105",
-      "port": "2222"
+      "port": 2222
     },
     {
-      "id": "7",
+      "id": 7,
       "ip": "10.7.1.105",
-      "port": "2222"
+      "port": 2222
     },
     {
-      "id": "8",
+      "id": 8,
       "ip": "10.8.1.105",
-      "port": "2222"
+      "port": 2222
     }
   ],
   "UN": "sshuser",
   "PASS": "P@$$w0rd",
   "HASH": "ff97b78597296c7e611d1cc8f3e9a1f6",
-  "uploadFileName": "fileToUpload.txt"
+  "uploadFileName": "fileToUpload.txt",
+  "flagSubmissionUrl": "http://10.10.0.30:5678/submit",
+  "flag" : {
+    "boxname": "BoxName",
+    "name": "Gimme",
+    "payload": "FLAG=NoFlag"
+  }
 }
