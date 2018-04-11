@@ -59,9 +59,11 @@ function poller(target){
         setTimeout(function() { conn.close(); process.exit(0) }, 500);
         });
         console.log("Team" + target.id + " will have their flag populated");
-      } else {
-        //poller(target);
-      };
+        fs.writeFile('/var/poller/flag' + target.id + '.txt', 'flagFound', (err) => {
+          if (err) throw err;
+          console.log('Team' + target.id + ' file has been saved!');
+        });
+      }
   });
 }
 
@@ -76,5 +78,7 @@ function makeid() {
 }
 
 settings.sshServers.forEach(function(target) {
-  poller(target);
+  if (!(fs.existsSync('/var/poller/flag' + target.id + '.txt'))) {
+    poller(target);
+  }
 });
