@@ -1,14 +1,17 @@
 var settings = require('./settings.json');
 var Client = require('ssh2-sftp-client');
 var fs = require('fs');
-var sftp = new Client();
 var sleep = require('sleep');
+var amqp = require('amqplib/callback_api');
+
+sleep.sleep(10);
 
 function poller(target){
-  sleep.sleep(10);
   var fileName = makeid();
   fileName = fileName + ".txt";
+  var sftp = new Client();
   sftp.connect({
+    readyTimeout: '1000',
     host: target.ip,
     hostHash: 'md5',
     hostVerifier: function(hashedKey) {
@@ -21,7 +24,7 @@ function poller(target){
         return true;
       }
       //Output the failed comparison to the console if you want to see what went wrong
-      console.log("Hash values: Server = " + hashedKey + " <> Client = " + setting.HASH);
+      console.log("Hash values: Server = " + hashedKey + " <> Client = " + settings.HASH);
       return false;
     },
     port: target.port,
@@ -36,18 +39,29 @@ function poller(target){
   })
   .then((stream) => {
     console.log("no proxy in place");
-    //sftp.end();
-    //poller(target);
   })
   .then(() => {
     sftp.delete(fileName);
     sftp.end();
-    poller(target);
+    //poller(target);
   })
   .catch((err) => {
-      console.log(err.message);
       sftp.end();
-      poller(target);
+      console.log(err.message);
+      if (err.message === "This user is not authorized to read from the server.") {
+        amqp.connect('amqp://ctfadmin:adminctf@10.10.0.30/', function(err, conn) {
+          conn.createChannel(function(err, ch) {
+          var q = 'flags';
+         
+           ch.assertQueue(q, {durable: true});
+           ch.sendToQueue(q, new Buffer.from('\{\"team\": ' + target.id + ', \"boxName\": \"BoxName\", \"flagName\": \"Gimme\", \"token\": \"FLAG=NoFlag\"\}'));
+          });
+        setTimeout(function() { conn.close(); process.exit(0) }, 500);
+        });
+        console.log("Team" + target.id + " will have their flag populated");
+      } else {
+        //poller(target);
+      };
   });
 }
 
