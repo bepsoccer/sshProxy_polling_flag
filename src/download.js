@@ -1,7 +1,6 @@
 var settings = require('./settings.json');
 var Client = require('ssh2-sftp-client');
 var fs = require('fs');
-var sftp = new Client();
 var sleep = require('sleep');
 var amqp = require('amqplib/callback_api');
 
@@ -9,6 +8,7 @@ function poller(target){
   sleep.sleep(10);
   var fileName = makeid();
   fileName = fileName + ".txt";
+  var sftp = new Client();
   sftp.connect({
     host: target.ip,
     hostHash: 'md5',
