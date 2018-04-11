@@ -1,0 +1,13 @@
+{
+  "sshServers": [
+    {
+    	"id": "1",
+      "ip": "10.1.1.105",
+    	"port": "2222"
+    }
+  ],
+  "UN": "sshuser",
+  "PASS": "P@$$w0rd",
+  "HASH": "ff97b78597296c7e611d1cc8f3e9a1f6",
+  "uploadFileName": "fileToUpload.txt"
+}
