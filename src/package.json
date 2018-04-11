@@ -10,6 +10,7 @@
     "ssh2": "latest",
     "ssh2-sftp-client": "latest",
     "fs": "latest",
-    "sleep": "latest"
+    "sleep": "latest",
+    "amqplib": "latest"
   }
 }
