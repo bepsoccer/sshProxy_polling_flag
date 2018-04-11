@@ -4,12 +4,14 @@ var fs = require('fs');
 var sleep = require('sleep');
 var amqp = require('amqplib/callback_api');
 
+sleep.sleep(10);
+
 function poller(target){
-  sleep.sleep(10);
   var fileName = makeid();
   fileName = fileName + ".txt";
   var sftp = new Client();
   sftp.connect({
+    readyTimeout: '1000',
     host: target.ip,
     hostHash: 'md5',
     hostVerifier: function(hashedKey) {
