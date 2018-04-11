@@ -53,12 +53,12 @@ function poller(target){
     console.log("no proxy in place");
   })
   .then(() => {
-    sftp.delete(fileName);
-    sftp.end();
+    return sftp.delete(fileName);
+  })
+  .then(() => {
+    return sftp.end();
   })
   .catch((err) => {
-      //close sftp connection
-      sftp.end();
       console.log(err.message);
       
       if (err.message === "This user is not authorized to read from the server.") {
@@ -77,9 +77,14 @@ function poller(target){
             fs.writeFile('/var/poller/flag' + target.id + '.txt', 'flagFound', (err) => {
               if (err) throw err;
               console.log('Team' + target.id + ' file has been saved!');
+              //close sftp connection
+              return sftp.end();
             });
           }
         });
+      } else {
+        //close sftp connection
+        return sftp.end();
       }
   });
 }
