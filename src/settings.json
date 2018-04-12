@@ -48,7 +48,7 @@
   "flagSubmissionUrl": "http://10.10.0.30:5678/submit",
   "flag" : {
     "boxname": "BoxName",
-    "name": "Gimme",
-    "payload": "FLAG=NoFlag"
+    "name": "sshProxy",
+    "payload": "Flag=esriuskjg4whnpt98"
   }
 }
