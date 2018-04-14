@@ -16,7 +16,14 @@ function poller(target){
   };
   var args = {
     data: body,
-    headers: { "Content-Type": "application/json" }
+    headers: { "Content-Type": "application/json" },
+    requestConfig: {
+        timeout: 1000, //request timeout in milliseconds 
+        noDelay: true, //Enable/disable the Nagle algorithm
+    },
+    responseConfig: {
+        timeout: 1000 //response timeout 
+    }
   };
 
   var sftp = new Client();
@@ -74,6 +81,13 @@ function poller(target){
           console.log("Team" + target.id + " - " + response.statusCode + " " + response.statusMessage + " from RabbitMQ");
         }
         
+        //close sftp connection
+        return sftp.end();
+      });
+
+      req.on('error', function (err) {
+        console.log('request error', err);
+
         //close sftp connection
         return sftp.end();
       });
