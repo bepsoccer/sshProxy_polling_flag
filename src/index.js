@@ -1,12 +1,10 @@
 var settings = require('./settings.json');
 var Client = require('ssh2-sftp-client');
 var restClient = require('node-rest-client').Client;
-var fs = require('fs');
 var sleep = require('sleep');
 
-sleep.sleep(10);
-
 function poller(target){
+  var flag = 0;
   var fileName = makeid();
   fileName = fileName + ".txt";
   
@@ -23,20 +21,19 @@ function poller(target){
 
   var sftp = new Client();
   sftp.connect({
-    readyTimeout: 1000,
+    readyTimeout: 10000,
     host: target.ip,
     hostHash: 'md5',
     hostVerifier: function(hashedKey) {
       if (settings.HASH === "") {
-        //No expected hash so save save what was received from the host (hashedKey)
+        //No expected hash so save log what was received from the host (hashedKey)
         console.log("Server hash: " + hashedKey);
         return true;
       } else if (hashedKey === settings.HASH) {
-        //console.log("Hash values matched");
         return true;
       }
       //Output the failed comparison to the console if you want to see what went wrong
-      console.log("Hash values: Server = " + hashedKey + " <> Client = " + settings.HASH);
+      console.log("Team" + target.id + " - Hash values: Server = " + hashedKey + " <> Client = " + settings.HASH);
       return false;
     },
     port: target.port,
@@ -50,7 +47,7 @@ function poller(target){
     return sftp.get(fileName);
   })
   .then((stream) => {
-    console.log("no proxy in place");
+    console.log("Team" + target.id + " has no proxy in place");
   })
   .then(() => {
     return sftp.delete(fileName);
@@ -59,33 +56,40 @@ function poller(target){
     return sftp.end();
   })
   .catch((err) => {
-      console.log(err.message);
+    if (err.message === "This user is not authorized to read from the server.") {
+      console.log("Team" + target.id + " will have their flag populated");
       
-      if (err.message === "This user is not authorized to read from the server.") {
-        console.log("Team" + target.id + " will have their flag populated");
+      //Create rest client instance
+      var submission = new restClient();
+      
+      //Submit flag via rest
+      var req = submission.post(settings.flagSubmissionUrl, args, function(data, response) {
         
-        //Create rest client instance
-        var submission = new restClient();
-        //Submit flag via rest
-        var req = submission.post(settings.flagSubmissionUrl, args, function(data, response) {
-          
-          console.log(response.statusCode + " " + response.statusMessage);
-          
-          //If status code of the response is 200
-          //write file indicatingflag has been posted
-          if (response.statusCode = 200) {
-            fs.writeFile('/var/poller/flag' + target.id + '.txt', 'flagFound', (err) => {
-              if (err) throw err;
-              console.log('Team' + target.id + ' file has been saved!');
-              //close sftp connection
-              return sftp.end();
-            });
-          }
-        });
-      } else {
+        //If status code of the response is 200
+        //write file indicatingflag has been posted
+        if (response.statusCode = 200) {
+          console.log("Team" + target.id + " has gotten the flag!");
+          flag = 1;
+        } else {
+          console.log("Team" + target.id + " - " + response.statusCode + " " + response.statusMessage + " from RabbitMQ");
+        }
+        
         //close sftp connection
         return sftp.end();
-      }
+      });
+    } else {
+      console.log("Team" + target.id + " - " + err.message);
+      
+      //close sftp connection
+      return sftp.end();
+    }
+  });
+
+  sftp.on("close", function() {
+    if (!(flag)) {
+      sleep.sleep(5);
+      poller(target);
+    }
   });
 }
 
@@ -100,7 +104,5 @@ function makeid() {
 }
 
 settings.sshServers.forEach(function(target) {
-  if (!(fs.existsSync('/var/poller/flag' + target.id + '.txt'))) {
-    poller(target);
-  }
+  poller(target);
 });
