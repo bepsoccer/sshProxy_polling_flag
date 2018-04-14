@@ -1,12 +1,10 @@
 var settings = require('./settings.json');
 var Client = require('ssh2-sftp-client');
 var restClient = require('node-rest-client').Client;
-var fs = require('fs');
 var sleep = require('sleep');
 
 function poller(target){
   var flag = 0;
-  //sleep.sleep(10);
   var fileName = makeid();
   fileName = fileName + ".txt";
   
@@ -28,11 +26,10 @@ function poller(target){
     hostHash: 'md5',
     hostVerifier: function(hashedKey) {
       if (settings.HASH === "") {
-        //No expected hash so save save what was received from the host (hashedKey)
+        //No expected hash so save log what was received from the host (hashedKey)
         console.log("Server hash: " + hashedKey);
         return true;
       } else if (hashedKey === settings.HASH) {
-        //console.log("Hash values matched");
         return true;
       }
       //Output the failed comparison to the console if you want to see what went wrong
@@ -82,6 +79,7 @@ function poller(target){
       });
     } else {
       console.log("Team" + target.id + " - " + err.message);
+      
       //close sftp connection
       return sftp.end();
     }

@@ -1,15 +1,13 @@
 {
-  "name": "sshProxy",
+  "name": "sshProxy_polling_flag",
   "description": "polling ssh proxy",
   "author": "Brad Parker",
-  "main": "download.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node download.js"
+    "start": "node index.js"
   },
   "dependencies": {
-    "ssh2": "latest",
     "ssh2-sftp-client": "latest",
-    "fs": "latest",
     "sleep": "latest",
     "node-rest-client": "latest"
   }
