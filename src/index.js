@@ -1,7 +1,6 @@
 var settings = require('./settings.json');
 var Client = require('ssh2-sftp-client');
 var restClient = require('node-rest-client').Client;
-var sleep = require('sleep');
 
 function poller(target){
   var flag = 0;
@@ -21,7 +20,7 @@ function poller(target){
 
   var sftp = new Client();
   sftp.connect({
-    readyTimeout: 10000,
+    readyTimeout: 1000,
     host: target.ip,
     hostHash: 'md5',
     hostVerifier: function(hashedKey) {
@@ -87,8 +86,8 @@ function poller(target){
 
   sftp.on("close", function() {
     if (!(flag)) {
-      sleep.sleep(5);
-      poller(target);
+      //wait ~10s to start the next poll
+      setTimeout(poller, 10000, target);
     }
   });
 }

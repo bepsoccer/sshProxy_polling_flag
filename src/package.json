@@ -8,7 +8,6 @@
   },
   "dependencies": {
     "ssh2-sftp-client": "latest",
-    "sleep": "latest",
     "node-rest-client": "latest"
   }
 }
