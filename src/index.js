@@ -1,27 +1,16 @@
+"use strict"
 var settings = require('./settings.json');
 var Client = require('ssh2-sftp-client');
-var restClient = require('node-rest-client').Client;
-var sleep = require('sleep');
+var ctfFlagSubmission = require('ctf-flag-submission');
 
 function poller(target){
   var flag = 0;
   var fileName = makeid();
   fileName = fileName + ".txt";
-  
-  var body = {
-    "team": target.id,
-    "boxName": settings.flag.boxname,
-    "flagName": settings.flag.name,
-    "token": settings.flag.payload
-  };
-  var args = {
-    data: body,
-    headers: { "Content-Type": "application/json" }
-  };
 
   var sftp = new Client();
   sftp.connect({
-    readyTimeout: 10000,
+    readyTimeout: 1000,
     host: target.ip,
     hostHash: 'md5',
     hostVerifier: function(hashedKey) {
@@ -56,24 +45,21 @@ function poller(target){
     return sftp.end();
   })
   .catch((err) => {
+
     if (err.message === "This user is not authorized to read from the server.") {
       console.log("Team" + target.id + " will have their flag populated");
       
-      //Create rest client instance
-      var submission = new restClient();
-      
-      //Submit flag via rest
-      var req = submission.post(settings.flagSubmissionUrl, args, function(data, response) {
-        
-        //If status code of the response is 200
-        //write file indicatingflag has been posted
-        if (response.statusCode = 200) {
-          console.log("Team" + target.id + " has gotten the flag!");
-          flag = 1;
-        } else {
-          console.log("Team" + target.id + " - " + response.statusCode + " " + response.statusMessage + " from RabbitMQ");
-        }
-        
+      var input = {
+        "id": target.id,
+        "boxName": settings.flag.boxname,
+        "flag": settings.flag,
+        "host": settings.host,
+        "port": settings.hostPort
+      };
+
+      ctfFlagSubmission(input, function(result) {
+        if (result.success) {flag = 1;}
+        console.log(result);
         //close sftp connection
         return sftp.end();
       });
@@ -87,8 +73,8 @@ function poller(target){
 
   sftp.on("close", function() {
     if (!(flag)) {
-      sleep.sleep(5);
-      poller(target);
+      //wait ~10s to start the next poll
+      setTimeout(poller, 10000, target);
     }
   });
 }
