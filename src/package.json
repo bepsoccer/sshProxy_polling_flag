@@ -8,6 +8,6 @@
   },
   "dependencies": {
     "ssh2-sftp-client": "latest",
-    "node-rest-client": "latest"
+    "ctf-flag-submission": "latest"
   }
 }
